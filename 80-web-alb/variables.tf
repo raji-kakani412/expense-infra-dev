@@ -14,9 +14,12 @@ variable "common_tags" {
   }
 }
 
-variable "backend_tags"{
+variable "web_alb_tags"{
   default={
-    component= "backend"
+    component= "web-alb"
   }
 }
 
+variable "zone_name"{
+  default= "devops-aws.tech"
+}
