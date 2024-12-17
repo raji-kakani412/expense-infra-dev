@@ -55,7 +55,7 @@ module "records" {
 
   records = [
     {
-      name    = "expense-${var.environment}" # *.expense-dev.devops-aws.tech
+      name    = "expense-${var.environment}" # expense-dev.devops-aws.tech
       type    = "A"
            
       alias = {
