@@ -73,7 +73,6 @@ resource "aws_lb_target_group" "frontend" {
   name        = local.resource_name
   port        = 80
   protocol    = "HTTP"
-  target_type = "ip"
   vpc_id      = local.vpc_id
   
   health_check {
