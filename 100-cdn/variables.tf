@@ -14,12 +14,6 @@ variable "common_tags" {
   }
 }
 
-variable "frontend_tags"{
-  default={
-    component= "frontend"
-  }
-}
-
 variable "zone_name"{
   default= "devops-aws.tech"
 }

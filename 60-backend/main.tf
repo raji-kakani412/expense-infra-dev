@@ -73,7 +73,7 @@ resource "aws_lb_target_group" "backend" {
   name        = local.resource_name
   port        = 8080
   protocol    = "HTTP"
-  target_type = "ip"
+  #target_type = "ip"
   vpc_id      = local.vpc_id
   
   health_check {
@@ -125,7 +125,7 @@ resource "aws_autoscaling_group" "backend" {
     preferences {
       min_healthy_percentage = 50
     }
-    triggers = [launch_template]
+    triggers = ["launch_template"]
   }
 
 
@@ -161,7 +161,7 @@ resource "aws_autoscaling_policy" "backend" {
 }
 
 resource "aws_lb_listener_rule" "backend" {
-  listener_arn = local.listener_arn
+  listener_arn = local.app_alb_listener_arn
   priority     = 100 # low priority one will be evaluated first
 
   action {

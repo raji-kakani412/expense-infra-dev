@@ -1,14 +1,15 @@
 resource "aws_cloudfront_distribution" "expense" {
   origin {
-    domain_name              = "${var.project_name}-${var-environment}.${var.zone_name}"
-    origin_id                = "${var.project_name}-${var-environment}.${var.zone_name}"
+    domain_name              = "${var.project_name}-${var.environment}.${var.zone_name}"
+    origin_id                = "${var.project_name}-${var.environment}.${var.zone_name}"
+    custom_origin_config{
+      http_port=80
+      https_port=443
+      origin_protocol_policy="https-only"
+      origin_ssl_protocols= ["TLSv1.2"]
+    }
   }
-  custom_origin_config{
-    http_port=80
-    https_port=443
-    origin_protocol_policy="https-only"
-    origin_ssl_protocols= ["TLSv1.2"]
-  }
+  
 
   enabled             = true
   aliases = ["${var.project_name}-cdn.${var.zone_name}"]
@@ -17,13 +18,13 @@ resource "aws_cloudfront_distribution" "expense" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${var.project_name}-${var-environment}.${var.zone_name}"
+    target_origin_id = "${var.project_name}-${var.environment}.${var.zone_name}"
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
-    cache_policy_id=data.aws_cloudfront_cache_policy.nocache.id
+    cache_policy_id= data.aws_cloudfront_cache_policy.nocache.id
   }
 
   # Cache behavior with precedence 0
@@ -31,7 +32,7 @@ resource "aws_cloudfront_distribution" "expense" {
     path_pattern     = "/images/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = "${var.project_name}-${var-environment}.${var.zone_name}"
+    target_origin_id = "${var.project_name}-${var.environment}.${var.zone_name}"
 
 
     min_ttl                = 0
@@ -39,7 +40,7 @@ resource "aws_cloudfront_distribution" "expense" {
     max_ttl                = 31536000
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
-    cache_policy_id= data.aws.cacheOptimized.id
+    cache_policy_id= data.aws_cloudfront_cache_policy.cacheOptimized.id
   }
 
   # Cache behavior with precedence 1
@@ -47,7 +48,7 @@ resource "aws_cloudfront_distribution" "expense" {
     path_pattern     = "/static/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${var.project_name}-${var-environment}.${var.zone_name}"
+    target_origin_id = "${var.project_name}-${var.environment}.${var.zone_name}"
 
 
     min_ttl                = 0
@@ -55,7 +56,7 @@ resource "aws_cloudfront_distribution" "expense" {
     max_ttl                = 86400
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
-    cache_policy_id= data.aws.cacheOptimized.id
+    cache_policy_id= data.aws_cloudfront_cache_policy.cacheOptimized.id
   }
 
   
@@ -63,7 +64,7 @@ resource "aws_cloudfront_distribution" "expense" {
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = ["IN"]
+      locations        = ["US"]
     }
   }
 
@@ -89,7 +90,7 @@ module "records" {
 
   records = [
     {
-      name    = "expense-cdn" # expense-dev.devops-aws.tech
+      name    = "expense-cdn" # expense-cdn.devops-aws.tech
       type    = "A"
            
       alias = {
